@@ -34,8 +34,11 @@ const Routed = () => {
      * An empty array to be filled with objects that contain data about packages
      */
     const arr = []
+    
 
     for(let i = 0; i < data.length; i++){
+
+      const arr0 = []
 
       /**
        * Checks if the package has any dependencies
@@ -62,25 +65,32 @@ const Routed = () => {
       }   
 
       for(let k = 0; k < depend2.length; k++){
-        if(depend2[k].indexOf("(") != -1){
+        if(depend2[k].indexOf("(") !== -1){
           depend2.splice(k, 1)
         }
       }
 
       for(let l = 0; l < depend2.length; l++){
-        if(depend2[l].indexOf(")") != -1){
+        if(depend2[l].indexOf(")") !== -1){
           depend2.splice(l, 1)
         }
       }
 
       for(let m = 0; m < depend2.length; m++){
-        if(depend2[m].indexOf("|") != -1){
+        if(depend2[m].indexOf("|") !== -1){
           depend2.splice(m, 1)
         }
-      }      
+      }  
+      
+      let depend3 = ""
 
       for(let n = 0; n < depend2.length; n++){
         depend3 = depend3 + "______" + depend2[n]
+        let object = {
+          dependency: depend2[n],
+          path: `/${depend2[n]}`
+        }
+        arr0.push(object)
       }
 
       /**
@@ -94,6 +104,7 @@ const Routed = () => {
         description: `${data[i].Description}`,
         depends: depend3,
         reversedepends: "okok",
+        deps: arr0
       }
       arr.push(singleObject)
     }
@@ -103,7 +114,7 @@ const Routed = () => {
   /**
    * Creates routes for all the packages and defines routes to components
    */
-  const routeComponents = routes.map(item => <Route path={item.path} key={item.id} render={() => <Component name={item.name} description={item.description} depends={item.depends}/>} />)
+  const routeComponents = routes.map(item => <Route path={item.path} key={item.id} render={() => <Component name={item.name} description={item.description} depends={item.depends} deps={item.deps}/>} />)
 
   /**
    * Creates links to all the components
@@ -114,6 +125,7 @@ const Routed = () => {
    * Returns component that renders information about packages
    */
   const Component = (props) => {
+    const LinkDependencies = props.deps.map(item => <li><Link to={item.path} onClick={handleClick}>{item.dependency}</Link></li>)
     return(
       <>
         <div>
@@ -121,7 +133,10 @@ const Routed = () => {
         </div>
         <div>
           <p>description: {props.description}</p>
-          <p>depends: {props.depends}</p>
+        </div>
+        <div>
+          <h2>depends:</h2>
+          {LinkDependencies}
         </div>
       </>
     )
