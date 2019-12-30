@@ -94,7 +94,6 @@ const Routed = () => {
         description: `${data[i].Description}`,
         depends: depend3,
         reversedepends: "okok",
-        deps: depend2
       }
       arr.push(singleObject)
     }
@@ -104,7 +103,7 @@ const Routed = () => {
   /**
    * Creates routes for all the packages and defines routes to components
    */
-  const routeComponents = routes.map(item => <Route path={item.path} key={item.id} render={() => <Component name={item.name} description={item.description} depends={item.depends} deps={item.deps} path={item.path}/>} />)
+  const routeComponents = routes.map(item => <Route path={item.path} key={item.id} render={() => <Component name={item.name} description={item.description} depends={item.depends}/>} />)
 
   /**
    * Creates links to all the components
@@ -123,9 +122,6 @@ const Routed = () => {
         <div>
           <p>description: {props.description}</p>
           <p>depends: {props.depends}</p>
-        </div>
-        <div>
-          props.deps.map(item => <li><Link to={props.path} onClick={handleClick}>{item}</Link></li>)
         </div>
       </>
     )
