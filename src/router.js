@@ -51,7 +51,6 @@ const Routed = () => {
       depend = depend.split("<").join("")
       depend = depend.split(">").join("")
       depend = depend.split(",").join("")
-      depend = depend.split(".").join("")
       depend = depend.split("~").join("")
       depend = depend.split("  ").join(" ")
 
