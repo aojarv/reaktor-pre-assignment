@@ -1,7 +1,6 @@
 import React from 'react'
 import {
-  BrowserRouter as Router,
-  Route, Link
+   Link
 } from 'react-router-dom'
 import { animateScroll as scroll } from "react-scroll";
 
@@ -23,9 +22,34 @@ const Component = (props) => {
     scrollToTop()
   }
 
-  const LinkDependencies = props.deps.map(item => <li><Link to={item.path} onClick={handleClick}>{item.dependency}</Link></li>)
+  const LinkDependencies = props.deps.map(item => <li>
+                                                    <Link 
+                                                    className="link" 
+                                                    to={item.path} 
+                                                    onClick={handleClick}
+                                                    >
+                                                      {item.dependency}
+                                                    </Link>
+                                                  </li>)
 
-  const LinkReverseDependencies = props.revdeps.map(item => <li><Link to={item.path} onClick={handleClick}>{item.reversedependency}</Link></li>)
+  const LinkReverseDependencies = props.revdeps.map(item => <li>
+                                                              <Link 
+                                                              className="link" 
+                                                              to={item.path} 
+                                                              onClick={handleClick}
+                                                              >
+                                                                {item.reversedependency}
+                                                              </Link>
+                                                            </li>)
+
+const LinkAlternateDependencies = props.alternates.map(item => <li>
+                                                                  {item.map(stuff => <Link              className="link"
+                                                                  to={stuff.path} 
+                                                                  onClick={handleClick}
+                                                                  >
+                                                                    {stuff.dependency}
+                                                                  </Link>)}
+                                                                </li>)
 
   return(
     <>
@@ -39,6 +63,7 @@ const Component = (props) => {
       <div>
         <h2>dependencies:</h2>
         {LinkDependencies}
+        {LinkAlternateDependencies}
       </div>
       <div>
         <h2>reverse dependencies:</h2>

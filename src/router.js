@@ -4,54 +4,27 @@ import {
   Route, Link
 } from 'react-router-dom'
 import data from './status/data'
-import revdeps from './status/reversedata'
+import reversedependencies from './status/reversedata'
 import './index.css'
-import { animateScroll as scroll } from "react-scroll";
 import Component from './component.js'
 import Home from './home.js'
+import handleClick from './handleclick.js'
 
 const Routed = () => {
 
+  // An empty array for the list of objects that contain data about packages
   const [routes, setRoutes] = useState([])
-
-
-  //Function for scrolling to top when link is clicked
-  const scrollToTop = () => {
-    scroll.scrollToTop();
-  }
-
   
-  // Function for clicking link
-  const handleClick = () => {
-    scrollToTop()
-  }
-
-  
-  //Before the component renders, all the data is modified
+  //This all is done before the component renders
   useEffect(() => {
-
-    
-    //An empty array to be filled with objects that contain data about packages
     const arr = []
-    
-    //Loops through all the packages
+
+    //Loops through all the packages. Inside this loop 
     for(let i = 0; i < data.length; i++){
-      
-      // Arrays for objects that contain path and package name for dependencies and reverse dependencies
       const arr0 = []
       const arr1 = []
-
-
-      let revdep = revdeps[i].Depends
-
-      // Loops through reverse dependencies and creates objects from them
-      for (let a = 0; a < revdep.length; a++){
-        let object = {
-          reversedependency: revdep[a],
-          path: `/${revdep[a]}`
-        }
-        arr1.push(object)
-      }
+      const arr01 = []
+      let revdeps = reversedependencies[i].Depends
 
       //Checks if the package has any dependencies
       let depend = ""
@@ -61,41 +34,87 @@ const Routed = () => {
       else{
         depend = ""
       }
-
-      //Removes version numbers and other characters that are not needed
-      let depend1 = depend
-      let depend2 = depend1.split(" ")
-
-      for(let j = 0; j < depend2.length; j++){
-        if(depend2[j].charAt(depend2[j].length - 1) === ","){
-          depend2[j] = depend2[j].substring(0, depend2[j].length - 1)
+      
+      // Removes version numbers
+      let start = 0
+      for(let i = depend.length - 1; i >= 0; i--){
+        if(depend.charAt(i) === ")"){
+          start = i
         }
-      }   
-
-      for(let k = 0; k < depend2.length; k++){
-        if(depend2[k].indexOf("(") !== -1){
-          depend2.splice(k, 1)
+        if(depend.charAt(i) === "("){
+          depend = depend.substring(0, i - 1) + depend.substring(start + 1, depend.length)
         }
       }
 
-      for(let l = 0; l < depend2.length; l++){
-        if(depend2[l].indexOf(")") !== -1){
-          depend2.splice(l, 1)
+      // Removes symbols that are not needed
+      depend = depend.split("=").join("")
+      depend = depend.split("<").join("")
+      depend = depend.split(">").join("")
+      depend = depend.split(",").join("")
+      depend = depend.split(".").join("")
+      depend = depend.split("~").join("")
+      depend = depend.split("  ").join(" ")
+
+      // Here I turn the string into an array
+      let depend1 = depend.split(" ")
+      
+      // Removes cases where version numbers for example for Python3 are given in the end of the string like "Python3:any"
+      for(let j = 0; j < depend1.length; j++){
+        if(depend1[j].indexOf(":") !== -1){
+          depend1[j] = depend1[j].substring(0, depend1[j].indexOf(":"))
         }
+      } 
+
+      // Removes duplicates
+      depend1 = [...new  Set(depend1)]
+      
+      console.log(depend1)
+
+      let count = 0
+      for(let j = depend1.length; j >= 0; j--){
+        if(depend1[j] === "|"){
+          count = count + 1
+        }   
       }
-
-      for(let m = 0; m < depend2.length; m++){
-        if(depend2[m].indexOf("|") !== -1){
-          depend2.splice(m, 1)
+      // NYT CASET JOISSA MONTA | -MERKKIÄ!!!!
+      // NYT CASET JOISSA MONTA | -MERKKIÄ!!!!
+      // NYT CASET JOISSA MONTA | -MERKKIÄ!!!!
+      // NYT CASET JOISSA MONTA | -MERKKIÄ!!!!
+      if(count === 1){
+        let a = []
+        let pos = depend1.indexOf("|")
+        let obj1 = {
+          dependency: depend1[pos - 1],
+          path: `${depend1[pos - 1]}`
         }
-      }  
+        let obj2 = {
+          dependency: depend1[pos + 1],
+          path: `${depend1[pos + 1]}`
+        }
+        depend1.splice(pos - 1, 3)
+        a.push(obj1)
+        a.push(obj2)
+        arr01.push(a)
+      }
+      //console.log(count)
+      
 
-      for(let n = 0; n < depend2.length; n++){
+      // Creates objects and pushes them to an array
+      for(let j = 0; j < depend1.length; j++){
         let object = {
-          dependency: depend2[n],
-          path: `/${depend2[n]}`
+          dependency: depend1[j],
+          path: `/${depend1[j]}`
         }
         arr0.push(object)
+      }
+
+      // Loops through reverse dependencies and creates objects from them
+      for (let j = 0; j < revdeps.length; j++){
+        let object = {
+          reversedependency: revdeps[j],
+          path: `/${revdeps[j]}`
+        }
+        arr1.push(object)
       }
 
       // Makes objects that contain required data
@@ -105,6 +124,7 @@ const Routed = () => {
         name: `${data[i].Package}`,
         description: `${data[i].Description}`,
         deps: arr0,
+        alternates: arr01,
         revdeps: arr1
       }
       arr.push(singleObject)
@@ -121,13 +141,15 @@ const Routed = () => {
                                                               description={item.description} 
                                                               deps={item.deps} 
                                                               revdeps={item.revdeps}
+                                                              alternates={item.alternates}
                                                               />} 
                                                               />)
 
   
   // Creates links to all the components 
   const LinkComponents = routes.map(item => <li>
-                                              <Link 
+                                              <Link
+                                                className="link" 
                                                 to={item.path} 
                                                 onClick={handleClick} 
                                                 id={item.id} 
@@ -141,7 +163,7 @@ const Routed = () => {
     <Router>
       <div className="view">
         <div className="routes">
-          <Link to="/">home</Link>
+          <Link className="link" to="/"><h2>home</h2></Link>
           {LinkComponents}
         </div>
         <div className="components">

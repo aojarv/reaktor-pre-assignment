@@ -1,15 +1,12 @@
 import React from 'react'
-import {
-  BrowserRouter as Router,
-  Route, Link
-} from 'react-router-dom'
-import { animateScroll as scroll } from "react-scroll";
+import home from './home1.png'
+import './index.css'
 
 // Component for the home page 
 const Home = () => {
   return(
     <>
-      <h1>työttömyys</h1>
+      <h1><img className="homepic" src={home} alt="home"></img></h1>
     </>
   )
 }
