@@ -4,45 +4,56 @@ import {
   Route, Link
 } from 'react-router-dom'
 import data from './status/data'
+import revdeps from './status/reversedata'
 import './index.css'
 import { animateScroll as scroll } from "react-scroll";
+import Component from './component.js'
+import Home from './home.js'
 
 const Routed = () => {
 
   const [routes, setRoutes] = useState([])
 
-  /**
-   * Function for scrolling to top when link is clicked
-   */
+
+  //Function for scrolling to top when link is clicked
   const scrollToTop = () => {
     scroll.scrollToTop();
   }
 
-  /**
-   * Function for clicking link
-   */
+  
+  // Function for clicking link
   const handleClick = () => {
     scrollToTop()
   }
 
-  /**
-   * Before the component renders, all the data is modified
-   */
+  
+  //Before the component renders, all the data is modified
   useEffect(() => {
 
-    /**
-     * An empty array to be filled with objects that contain data about packages
-     */
+    
+    //An empty array to be filled with objects that contain data about packages
     const arr = []
     
-
+    //Loops through all the packages
     for(let i = 0; i < data.length; i++){
-
+      
+      // Arrays for objects that contain path and package name for dependencies and reverse dependencies
       const arr0 = []
+      const arr1 = []
 
-      /**
-       * Checks if the package has any dependencies
-       */
+
+      let revdep = revdeps[i].Depends
+
+      // Loops through reverse dependencies and creates objects from them
+      for (let a = 0; a < revdep.length; a++){
+        let object = {
+          reversedependency: revdep[a],
+          path: `/${revdep[a]}`
+        }
+        arr1.push(object)
+      }
+
+      //Checks if the package has any dependencies
       let depend = ""
       if(!!data[i].Depends){
         depend = data[i].Depends
@@ -51,12 +62,9 @@ const Routed = () => {
         depend = ""
       }
 
-      /**
-       * Removes version numbers and other characters that are not needed
-       */
+      //Removes version numbers and other characters that are not needed
       let depend1 = depend
       let depend2 = depend1.split(" ")
-      let depend3 = ""
 
       for(let j = 0; j < depend2.length; j++){
         if(depend2[j].charAt(depend2[j].length - 1) === ","){
@@ -81,11 +89,8 @@ const Routed = () => {
           depend2.splice(m, 1)
         }
       }  
-      
-      let depend3 = ""
 
       for(let n = 0; n < depend2.length; n++){
-        depend3 = depend3 + "______" + depend2[n]
         let object = {
           dependency: depend2[n],
           path: `/${depend2[n]}`
@@ -93,69 +98,45 @@ const Routed = () => {
         arr0.push(object)
       }
 
-      /**
-       * Makes objects with data that is needed
-       */
+      // Makes objects that contain required data
       let singleObject = {
         id: i,
         path: `/${data[i].Package}`,
-        component: Component,
         name: `${data[i].Package}`,
         description: `${data[i].Description}`,
-        depends: depend3,
-        reversedepends: "okok",
-        deps: arr0
+        deps: arr0,
+        revdeps: arr1
       }
       arr.push(singleObject)
     }
     setRoutes(arr)
   }, [])
 
-  /**
-   * Creates routes for all the packages and defines routes to components
-   */
-  const routeComponents = routes.map(item => <Route path={item.path} key={item.id} render={() => <Component name={item.name} description={item.description} depends={item.depends} deps={item.deps}/>} />)
+  // Creates routes for all the packages and defines routes to components
+  const routeComponents = routes.map(item => <Route 
+                                              path={item.path} 
+                                              key={item.id} 
+                                              render={() => <Component 
+                                                              name={item.name} 
+                                                              description={item.description} 
+                                                              deps={item.deps} 
+                                                              revdeps={item.revdeps}
+                                                              />} 
+                                                              />)
 
-  /**
-   * Creates links to all the components
-   */
-  const LinkComponents = routes.map(item => <li><Link to={item.path} onClick={handleClick} id={item.id} key={item.id}>{item.name}</Link></li>)
   
-  /**
-   * Returns component that renders information about packages
-   */
-  const Component = (props) => {
-    const LinkDependencies = props.deps.map(item => <li><Link to={item.path} onClick={handleClick}>{item.dependency}</Link></li>)
-    return(
-      <>
-        <div>
-          <h1>{props.name}</h1>
-        </div>
-        <div>
-          <p>description: {props.description}</p>
-        </div>
-        <div>
-          <h2>depends:</h2>
-          {LinkDependencies}
-        </div>
-      </>
-    )
-  }
-
-  /**
-   * Component for the home page
-   */
-  const Home = () => {
-    return(
-      <>
-        <h1>työttömyys</h1>
-      </>
-    )
-  }
-
-  /**
-   * returns the whole app that is rendered in index.js
-   */
+  // Creates links to all the components 
+  const LinkComponents = routes.map(item => <li>
+                                              <Link 
+                                                to={item.path} 
+                                                onClick={handleClick} 
+                                                id={item.id} 
+                                                key={item.id}>
+                                                  {item.name}
+                                                </Link>
+                                              </li>)
+  
+  // returns the whole app that is rendered in index.js
   return(
     <Router>
       <div className="view">

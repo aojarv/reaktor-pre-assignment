@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.css"],"names":[],"mappings":"AAAA,MACE,YAAa,CACb,kBACF,CAEA,QACE,QACF,CAEA,YACE,QACF","file":"main.c2c6d570.chunk.css","sourcesContent":[".view{\r\n  display: flex;\r\n  flex-direction: row;\r\n}\r\n\r\n.routes{\r\n  flex: 1;\r\n}\r\n\r\n.components{\r\n  flex: 3;\r\n}"]}
