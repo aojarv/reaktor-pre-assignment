@@ -47,7 +47,7 @@ const LinkAlternateDependencies = props.alternates.map(item => <li>
                                                                   to={stuff.path} 
                                                                   onClick={handleClick}
                                                                   >
-                                                                    {stuff.dependency}
+                                                                    {stuff.or}{stuff.dependency}
                                                                   </Link>)}
                                                                 </li>)
 

@@ -84,11 +84,13 @@ const Routed = () => {
         let pos = depend1.indexOf("|")
         let obj1 = {
           dependency: depend1[pos - 1],
-          path: `${depend1[pos - 1]}`
+          path: `${depend1[pos - 1]}`,
+          or: ""
         }
         let obj2 = {
           dependency: depend1[pos + 1],
-          path: `${depend1[pos + 1]}`
+          path: `${depend1[pos + 1]}`,
+          or: " OR "
         }
         depend1.splice(pos - 1, 3)
         a.push(obj1)
@@ -97,12 +99,24 @@ const Routed = () => {
       }
       //console.log(count)
       
+      let missing = ["e2fslibs", "console-setup-freebsd", "python3-cffi-backend-api-min", "python3-cffi-backend-api-max", "debconf-2.0", "cdebconf", "cgroup-lite", "hurd", "libcomerr2", "module-init-tools", "gpgv2", "gpgv1", "perlapi-5.26.0", "pinentry", "host", "nginx-full", "nginx-light", "nginx-extras", "cloud-utils", "ifupdown", "anacron", "cron-daemon", "console-setup-mini"]
 
       // Creates objects and pushes them to an array
       for(let j = 0; j < depend1.length; j++){
-        let object = {
-          dependency: depend1[j],
-          path: `/${depend1[j]}`
+        let object = {}
+        for (let k = 0; k < missing.length; k++){
+          if(depend1[j] === missing[k]){
+            object = {
+              dependency: depend1[j],
+              path: `/error`
+            }
+          }
+          else{
+            object = {
+              dependency: depend1[j],
+              path: `/${depend1[j]}`
+            }
+          } 
         }
         arr0.push(object)
       }
