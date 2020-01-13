@@ -9,6 +9,8 @@ import './index.css'
 import Component from './component.js'
 import Home from './home.js'
 import handleClick from './handleclick.js'
+import Error from './error.js'
+import replaced from './replaced.js'
 
 const Routed = () => {
 
@@ -46,10 +48,9 @@ const Routed = () => {
         }
       }
 
+      let depend2 = depend.split(",")
+
       // Removes symbols that are not needed
-      depend = depend.split("=").join("")
-      depend = depend.split("<").join("")
-      depend = depend.split(">").join("")
       depend = depend.split(",").join("")
       depend = depend.split("~").join("")
       depend = depend.split("  ").join(" ")
@@ -67,6 +68,7 @@ const Routed = () => {
       // Removes duplicates
       depend1 = [...new  Set(depend1)]
       
+      console.log(depend2)
       console.log(depend1)
 
       let count = 0
@@ -104,19 +106,23 @@ const Routed = () => {
       // Creates objects and pushes them to an array
       for(let j = 0; j < depend1.length; j++){
         let object = {}
+        let x = 0
         for (let k = 0; k < missing.length; k++){
           if(depend1[j] === missing[k]){
-            object = {
-              dependency: depend1[j],
-              path: `/error`
-            }
+            x = x + 1
           }
-          else{
-            object = {
-              dependency: depend1[j],
-              path: `/${depend1[j]}`
-            }
-          } 
+        }
+        if(x === 1){
+          object = {
+            dependency: depend1[j],
+            path: `/error`
+          }
+        }
+        else{
+          object = {
+            dependency: depend1[j],
+            path: `/${depend1[j]}`
+          }
         }
         arr0.push(object)
       }
@@ -181,6 +187,7 @@ const Routed = () => {
         </div>
         <div className="components">
           <Route exact path="/" render={() => <Home/>}/>
+          <Route path="/error" render={() => <Error/>}/>
           {routeComponents}
         </div>
       </div>
