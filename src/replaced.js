@@ -62,6 +62,10 @@ const replaces = [
   {
       package: "keyboard-configuration",
       replaces: "console-setup-mini"
+  },
+  {
+      package: "util-linux",
+      replaces: "initscripts"
   }
 ]
 

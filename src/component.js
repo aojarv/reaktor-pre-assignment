@@ -22,6 +22,21 @@ const Component = (props) => {
     scrollToTop()
   }
 
+  const Linkki = (props) => {
+    return(
+      <div>
+      <Link              
+        className="link"
+        to={props.path} 
+        onClick={handleClick}
+      >
+      {props.dependency}
+      </Link>
+      {props.or}
+      </div>
+    )
+  }
+
   const LinkDependencies = props.deps.map(item => <li>
                                                     <Link 
                                                     className="link" 
@@ -43,12 +58,7 @@ const Component = (props) => {
                                                             </li>)
 
 const LinkAlternateDependencies = props.alternates.map(item => <li>
-                                                                  {item.map(stuff => <Link              className="link"
-                                                                  to={stuff.path} 
-                                                                  onClick={handleClick}
-                                                                  >
-                                                                    {stuff.or}{stuff.dependency}
-                                                                  </Link>)}
+                                                                  {item.map(stuff => <Linkki path={stuff.path} dependency={stuff.dependency} or={stuff.or}/>)}
                                                                 </li>)
 
   return(

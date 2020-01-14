@@ -91,7 +91,7 @@ const Routed = () => {
       //console.log(depend2)
       //console.log(depend1)
       
-      let missing = ["console-setup-freebsd", "cdebconf", "cgroup-lite", "hurd", "gpgv1", "ifupdown", "anacron"]
+      let missing = ["console-setup-freebsd", "cdebconf", "cgroup-lite", "hurd", "gpgv1", "ifupdown", "anacron", "console-tools"]
 
       // Creates paths for alternates and checks if any of the packages are replaced by some another package
       for(let j = depend2.length - 1; j >= 0; j--){
@@ -111,23 +111,53 @@ const Routed = () => {
             }
             for(let l = 0; l < replaced.length; l++){
               if(replaced[l].replaces === a[k]){
-                object = {
-                  dependency: a[k],
-                  path: `${replaced[l].package}`
+                if(k === a.length - 1){
+                  object = {
+                    dependency: a[k],
+                    path: `${replaced[l].package}`,
+                    or: ""
+                  }
+                }
+                else{
+                  object = {
+                    dependency: a[k],
+                    path: `${replaced[l].package}`,
+                    or: " or"
+                  }
                 }
                 x = 2
               }
             }
             if(x === 1){
-              object = {
-                dependency: a[k],
-                path: `/error`
+              if(k !== a.length - 1){
+                object = {
+                  dependency: a[k],
+                  path: `/error`,
+                  or: " or"
+                }
+              }
+              else{
+                object = {
+                  dependency: a[k],
+                  path: `/error`,
+                  or: ""
+                }
               }
             }
             else if(x === 0){
-              object = {
-                dependency: a[k],
-                path: `${a[k]}`
+              if(k !== a.length -1){
+                object = {
+                  dependency: a[k],
+                  path: `${a[k]}`,
+                  or: " or "
+                }
+              }
+              else{
+                object = {
+                  dependency: a[k],
+                  path: `${a[k]}`,
+                  or: ""
+                }
               }
             }
             b.push(object)
