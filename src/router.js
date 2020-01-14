@@ -14,6 +14,8 @@ import replaced from './replaced.js'
 
 const Routed = () => {
 
+  
+
   // An empty array for the list of objects that contain data about packages
   const [routes, setRoutes] = useState([])
   
@@ -48,62 +50,96 @@ const Routed = () => {
         }
       }
 
-      let depend2 = depend.split(",")
-
       // Removes symbols that are not needed
-      depend = depend.split(",").join("")
       depend = depend.split("~").join("")
       depend = depend.split("  ").join(" ")
 
-      // Here I turn the string into an array
+      // Turns string into array from where i remove everything else but alternates
+      let d = depend.split(", ").join(",")
+      let depend2 = d.split(",")
+
+      // Removes commas that are not needed
+      depend = depend.split(",").join("")
+
+      // Here I turn the string into an array from where i remove the alternates
       let depend1 = depend.split(" ")
       
-      // Removes cases where version numbers for example for Python3 are given in the end of the string like "Python3:any"
+      // Removes cases from the depend1 array where version numbers for example for Python3 are given in the end of the string like "Python3:any"
       for(let j = 0; j < depend1.length; j++){
         if(depend1[j].indexOf(":") !== -1){
           depend1[j] = depend1[j].substring(0, depend1[j].indexOf(":"))
         }
       } 
 
-      // Removes duplicates
-      depend1 = [...new  Set(depend1)]
-      
-      console.log(depend2)
-      console.log(depend1)
-
-      let count = 0
-      for(let j = depend1.length; j >= 0; j--){
+      // Removes alternates
+      for(let j = depend1.length - 1; j >= 0; j--){
         if(depend1[j] === "|"){
-          count = count + 1
+          depend1.splice(j - 1, 3)
         }   
       }
-      // NYT CASET JOISSA MONTA | -MERKKIÄ!!!!
-      // NYT CASET JOISSA MONTA | -MERKKIÄ!!!!
-      // NYT CASET JOISSA MONTA | -MERKKIÄ!!!!
-      // NYT CASET JOISSA MONTA | -MERKKIÄ!!!!
-      if(count === 1){
-        let a = []
-        let pos = depend1.indexOf("|")
-        let obj1 = {
-          dependency: depend1[pos - 1],
-          path: `${depend1[pos - 1]}`,
-          or: ""
-        }
-        let obj2 = {
-          dependency: depend1[pos + 1],
-          path: `${depend1[pos + 1]}`,
-          or: " OR "
-        }
-        depend1.splice(pos - 1, 3)
-        a.push(obj1)
-        a.push(obj2)
-        arr01.push(a)
-      }
-      //console.log(count)
-      
-      let missing = ["e2fslibs", "console-setup-freebsd", "python3-cffi-backend-api-min", "python3-cffi-backend-api-max", "debconf-2.0", "cdebconf", "cgroup-lite", "hurd", "libcomerr2", "module-init-tools", "gpgv2", "gpgv1", "perlapi-5.26.0", "pinentry", "host", "nginx-full", "nginx-light", "nginx-extras", "cloud-utils", "ifupdown", "anacron", "cron-daemon", "console-setup-mini"]
 
-      // Creates objects and pushes them to an array
+      // Removes duplicates
+      depend1 = [...new  Set(depend1)]
+
+      // Removes items that are not alternates
+      for(let j = depend2.length - 1; j >= 0; j--){
+        if(depend2[j].indexOf("|") === -1){
+          depend2.splice(j, 1)
+        }
+      }
+      
+      //console.log(depend2)
+      //console.log(depend1)
+      
+      let missing = ["console-setup-freebsd", "cdebconf", "cgroup-lite", "hurd", "gpgv1", "ifupdown", "anacron"]
+
+      // Creates paths for alternates and checks if any of the packages are replaced by some another package
+      for(let j = depend2.length - 1; j >= 0; j--){
+        let a = depend2[j].split(" ")
+        let b = []
+        
+        
+        for(let k = 0; k < a.length; k++){
+          let x = 0
+          if(a[k].indexOf("|") === -1){
+            let object = {}
+
+            for(let l = 0; l < missing.length; l++){
+              if(a[k] === missing[l]){
+                x = 1
+              }
+            }
+            for(let l = 0; l < replaced.length; l++){
+              if(replaced[l].replaces === a[k]){
+                object = {
+                  dependency: a[k],
+                  path: `${replaced[l].package}`
+                }
+                x = 2
+              }
+            }
+            if(x === 1){
+              object = {
+                dependency: a[k],
+                path: `/error`
+              }
+            }
+            else if(x === 0){
+              object = {
+                dependency: a[k],
+                path: `${a[k]}`
+              }
+            }
+            b.push(object)
+          }
+          
+        }
+        arr01.push(b)
+      }
+      
+      console.log(arr01)
+
+      // Creates objects from the items that are not alternates and pushes them to an array
       for(let j = 0; j < depend1.length; j++){
         let object = {}
         let x = 0
@@ -112,13 +148,22 @@ const Routed = () => {
             x = x + 1
           }
         }
+        for(let k = 0; k < replaced.length; k++){
+          if(replaced[k].replaces === depend1[j]){
+            object = {
+              dependency: depend1[j],
+              path: `/${replaced[k].package}`
+            }
+            x = x + 2
+          }
+        }
         if(x === 1){
           object = {
             dependency: depend1[j],
             path: `/error`
           }
         }
-        else{
+        else if(x === 0){
           object = {
             dependency: depend1[j],
             path: `/${depend1[j]}`
