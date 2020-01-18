@@ -3,7 +3,7 @@ import {
   BrowserRouter as Router,
   Route, Link
 } from 'react-router-dom'
-import data from './status/data'
+import data from './status/sorted'
 import reversedependencies from './status/reversedata'
 import './index.css'
 import Component from './component.js'
@@ -14,20 +14,19 @@ import replaced from './replaced.js'
 
 const Routed = () => {
 
-  
-
-  // An empty array for the list of objects that contain data about packages
+  // An empty useState-array for the list of objects. Objects contain data about the packages.
   const [routes, setRoutes] = useState([])
   
-  //This all is done before the component renders
   useEffect(() => {
+
+    // An empty array for objects. 
     const arr = []
 
     //Loops through all the packages. Inside this loop 
     for(let i = 0; i < data.length; i++){
       const arr0 = []
       const arr1 = []
-      const arr01 = []
+      const alternates = []
       let revdeps = reversedependencies[i].Depends
 
       //Checks if the package has any dependencies
@@ -87,9 +86,6 @@ const Routed = () => {
           depend2.splice(j, 1)
         }
       }
-      
-      //console.log(depend2)
-      //console.log(depend1)
       
       let missing = ["console-setup-freebsd", "cdebconf", "cgroup-lite", "hurd", "gpgv1", "ifupdown", "anacron", "console-tools"]
 
@@ -164,10 +160,8 @@ const Routed = () => {
           }
           
         }
-        arr01.push(b)
+        alternates.push(b)
       }
-      
-      console.log(arr01)
 
       // Creates objects from the items that are not alternates and pushes them to an array
       for(let j = 0; j < depend1.length; j++){
@@ -218,7 +212,7 @@ const Routed = () => {
         name: `${data[i].Package}`,
         description: `${data[i].Description}`,
         deps: arr0,
-        alternates: arr01,
+        alternates: alternates,
         revdeps: arr1
       }
       arr.push(singleObject)
@@ -238,7 +232,6 @@ const Routed = () => {
                                                               alternates={item.alternates}
                                                               />} 
                                                               />)
-
   
   // Creates links to all the components 
   const LinkComponents = routes.map(item => <li>
@@ -262,7 +255,7 @@ const Routed = () => {
         </div>
         <div className="components">
           <Route exact path="/" render={() => <Home/>}/>
-          <Route path="/error" render={() => <Error/>}/>
+          <Route exact path="/error" render={() => <Error/>}/>
           {routeComponents}
         </div>
       </div>

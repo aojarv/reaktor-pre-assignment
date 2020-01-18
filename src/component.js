@@ -1,27 +1,21 @@
 import React from 'react'
-import {
-   Link
-} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { animateScroll as scroll } from "react-scroll";
-
-
 
 const Component = (props) => {
 
-   /**
-   * Function for scrolling to top when link is clicked
-   */
+  // Function for scrolling to top when link is clicked
+
   const scrollToTop = () => {
     scroll.scrollToTop();
   }
 
-  /**
-   * Function for clicking link
-   */
+  // Function for clicking link
   const handleClick = () => {
     scrollToTop()
   }
 
+  // Link-component for rendering an alternate and "or" after it when needed
   const Linkki = (props) => {
     return(
       <div>
@@ -37,6 +31,7 @@ const Component = (props) => {
     )
   }
 
+  // Renders dependencies
   const LinkDependencies = props.deps.map(item => <li>
                                                     <Link 
                                                     className="link" 
@@ -47,6 +42,12 @@ const Component = (props) => {
                                                     </Link>
                                                   </li>)
 
+// Renders the cases where alternates are separated by |
+const LinkAlternateDependencies = props.alternates.map(item => <li>
+                                                                  {item.map(stuff => <Linkki path={stuff.path} dependency={stuff.dependency} or={stuff.or}/>)}
+                                                                </li>)
+
+  // Renders reverse dependencies
   const LinkReverseDependencies = props.revdeps.map(item => <li>
                                                               <Link 
                                                               className="link" 
@@ -56,10 +57,6 @@ const Component = (props) => {
                                                                 {item.reversedependency}
                                                               </Link>
                                                             </li>)
-
-const LinkAlternateDependencies = props.alternates.map(item => <li>
-                                                                  {item.map(stuff => <Linkki path={stuff.path} dependency={stuff.dependency} or={stuff.or}/>)}
-                                                                </li>)
 
   return(
     <>
