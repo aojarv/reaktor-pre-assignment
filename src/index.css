@@ -18,12 +18,6 @@ body{
   flex: 3;
 }
 
-.homepic{
-  max-width: 30vw;
-  border: 2px solid black;
-  border-radius: 20px;
-}
-
 .link:hover{
   text-transform: uppercase;
 }
@@ -54,12 +48,6 @@ body{
   .components{
     flex: 5;
     margin: 2px;
-  }
-  
-  .homepic{
-    max-width: 40vw;
-    border: 2px solid black;
-    border-radius: 20px;
   }
 
   .link:hover{

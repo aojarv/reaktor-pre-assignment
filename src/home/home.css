@@ -1,0 +1,16 @@
+.homepic{
+  max-width: 30vw;
+  border: 2px solid black;
+  border-radius: 20px;
+}
+
+/** Settings when screen width is less than 900px
+*  (for mobile phones and others)
+*/
+@media screen and (max-width: 900px) {
+  .homepic{
+    max-width: 40vw;
+    border: 2px solid black;
+    border-radius: 20px;
+  }
+}

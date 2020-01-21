@@ -3,18 +3,21 @@ import {
   BrowserRouter as Router,
   Route, Link
 } from 'react-router-dom'
+import handleClick from './components/handleclick.js'
+
 import data from './status/sorted'
 import reversedependencies from './status/reversedata'
+import replaced from './status/replaced.js'
+
 import './index.css'
-import Component from './component.js'
-import Home from './home.js'
-import handleClick from './handleclick.js'
-import Error from './error.js'
-import replaced from './replaced.js'
+
+import Component from './packages/component.js'
+import Error from './packages/error.js'
+import Home from './home/home.js'
 
 const Routed = () => {
 
-  // An empty useState-array for the list of objects. Objects contain data about the packages.
+  // Array for objects
   const [routes, setRoutes] = useState([])
   
   useEffect(() => {
@@ -22,7 +25,7 @@ const Routed = () => {
     // An empty array for objects. 
     const arr = []
 
-    //Loops through all the packages. Inside this loop 
+    //Loops through all the packages
     for(let i = 0; i < data.length; i++){
       const arr0 = []
       const arr1 = []
@@ -49,18 +52,14 @@ const Routed = () => {
         }
       }
 
-      // Removes symbols that are not needed
+      // Here I turn the string of dependencies into 2 different arrays. Other one for dependencies and other one for alternates. depend2 is for alternates and depend1 for normal dependencies
       depend = depend.split("~").join("")
       depend = depend.split("  ").join(" ")
 
-      // Turns string into array from where i remove everything else but alternates
       let d = depend.split(", ").join(",")
       let depend2 = d.split(",")
 
-      // Removes commas that are not needed
       depend = depend.split(",").join("")
-
-      // Here I turn the string into an array from where i remove the alternates
       let depend1 = depend.split(" ")
       
       // Removes cases from the depend1 array where version numbers for example for Python3 are given in the end of the string like "Python3:any"
@@ -70,31 +69,32 @@ const Routed = () => {
         }
       } 
 
-      // Removes alternates
+      // Removes alternates from depend1-array
       for(let j = depend1.length - 1; j >= 0; j--){
         if(depend1[j] === "|"){
           depend1.splice(j - 1, 3)
         }   
       }
 
-      // Removes duplicates
+      // Removes duplicates from depend1
       depend1 = [...new  Set(depend1)]
 
-      // Removes items that are not alternates
+      // Removes items that are not alternates leaving only alternates that are like "package1 | package" or "package1 | package2 | package3"
       for(let j = depend2.length - 1; j >= 0; j--){
         if(depend2[j].indexOf("|") === -1){
           depend2.splice(j, 1)
         }
       }
       
+
+      // Hand-made Array of dependencies that just dont exist or are not replaced by any other package
       let missing = ["console-setup-freebsd", "cdebconf", "cgroup-lite", "hurd", "gpgv1", "ifupdown", "anacron", "console-tools"]
 
-      // Creates paths for alternates and checks if any of the packages are replaced by some another package
+
+      // Creates paths for alternates and checks if any of the packages are replaced by some another package. replaced is list of objects that contains packages that are replaced by some another package.
       for(let j = depend2.length - 1; j >= 0; j--){
         let a = depend2[j].split(" ")
         let b = []
-        
-        
         for(let k = 0; k < a.length; k++){
           let x = 0
           if(a[k].indexOf("|") === -1){
