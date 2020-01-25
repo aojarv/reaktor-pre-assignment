@@ -1,5 +1,7 @@
 # Reaktor pre-assignment by Antti Järveläinen
-Finished in January the 24th, still has a lot to be improved. The status file is from my AWS-server (Ubuntu).
+Finished on January the 24th, still has a lot to be improved. The status file is from my AWS-server (Ubuntu).
+## How does it work?
+The app lists all the packages. By clicking a package name you find some information about it.
 ## Technologies?
 ### React
 Everything started from npx create-react-app
