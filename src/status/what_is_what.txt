@@ -1,5 +1,0 @@
-status is the file with raw data.
-data is the status file turned into JSON.
-reversedata is file (JSON) for reverse dependencies.
-sorted is file for alphabetically sorted data-file.
-replaced is hand-made file for information about packages that are replaced by some another package.
