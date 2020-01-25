@@ -1,6 +1,7 @@
 import json
 import string
 
+# Loops through the status file, creates objects from every package that is separated by empty line, and pushes them to an array.
 dict_list = []
 filename = "status"
 lines = [line.rstrip('\n') for line in open(filename)]
@@ -19,6 +20,6 @@ for line in lines:
 
 		dict = {}
 
-
+# Creates a file named data.json and stores the array in it
 with open("data.json", 'w') as json_file:
 	json.dump(dict_list, json_file)

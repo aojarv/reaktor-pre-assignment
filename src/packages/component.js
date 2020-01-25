@@ -4,7 +4,7 @@ import handleClick from '../components/handleclick.js'
 
 const Component = (props) => {
 
-  // Link-component for rendering an alternate and "or" after it when needed
+  // Link-component for rendering an alternate and "or" after it when needed. Used below in LinkAltDeps
   const Linkki = (props) => {
     return(
       <div>

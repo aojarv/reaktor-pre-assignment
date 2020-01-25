@@ -6,7 +6,7 @@ import {
 import handleClick from './components/handleclick.js'
 
 import data from './status/sorted'
-import reversedependencies from './status/reversedata'
+import reversedependencies from './status/reversesorted'
 import replaced from './status/replaced.js'
 
 import './index.css'

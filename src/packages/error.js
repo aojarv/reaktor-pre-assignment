@@ -1,5 +1,6 @@
 import React from 'react'
 
+// Component for packages that do not exist
 const Error = () => {
     return(
         <>
