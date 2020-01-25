@@ -88,7 +88,7 @@ const Routed = () => {
       
 
       // Hand-made Array of dependencies that just dont exist or are not replaced by any other package
-      let missing = ["console-setup-freebsd", "cdebconf", "cgroup-lite", "hurd", "gpgv1", "ifupdown", "anacron", "console-tools"]
+      let missing = ["console-setup-freebsd", "cdebconf", "cgroup-lite", "hurd", "gpgv1", "ifupdown", "anacron", "console-tools", "systemd-shim"]
 
 
       // Creates paths for alternates and checks if any of the packages are replaced by some another package. replaced is list of objects that contains packages that are replaced by some another package.
